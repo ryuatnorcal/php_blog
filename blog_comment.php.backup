@@ -1,0 +1,42 @@
+<?php
+	$commentID=$_GET['comID'];
+	// Init DB
+	mysql_select_db($database);
+	function select_comment ($commentID) {
+	$query = "SELECT id,".
+				" userName,".
+				" comments,".
+				" posterID,".
+				" isMain,".
+				" branch,".
+				" DATE_FORMAT(postDate, '%r %d-%m-%Y') as postDate".
+		" FROM rksb_weblog_comment".
+		" WHERE blogID = $commentID".
+		" ORDER BY postDate DESC";	// DESC is order by decreasing, ESC is order by incleasing
+		
+	return mysql_query($query);
+	}
+	if(isset($commentID))
+	{
+		$result = select_comment($commentID);
+		while($row = mysql_fetch_assoc($result))
+		{
+			echo "<h4>".$row['userName']." ".$row['postDate']."</h4><br />".
+				 "<p>".$row['comments'] ."</p><br />".
+				 "<br />".
+				 print " BLOG ID :" .$row['posterID'];
+		}	
+	}
+	else
+	{	print "<br />There is no comment <br />";	}
+	
+	echo "<center><form method='get' action='blog_comment_post.php'>".
+       	 "User Name : <input name='userName' type='text' /><br />".
+	   	 "Coemments :<br />".
+  	   	 "<textarea name='comments' rows='5' cols='50'></textarea>".
+  		 "<br />".
+  		 "<input name='comID' value".$commentID."/>".
+  		 "<button class='textArea' type='submit'>Post</button>".
+  		 "<button type='reset'>Reset</button>".
+  		 "</form></center>";
+?>
